@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dev Cascade</title>
+<meta name="description" content="Eight cascading skills for Claude Code that enforce quality at every stage of the development lifecycle. Ship fast. Ship correct.">
+<meta property="og:title" content="Dev Cascade">
+<meta property="og:description" content="Eight cascading skills for Claude Code. Each skill invokes the next. The chain catches what you miss.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://smillunchick.github.io/dev-cascade/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,9 +22,9 @@
   --bg-hover: oklch(20% 0.012 260);
   --text: oklch(92% 0.008 80);
   --text-2: oklch(70% 0.01 80);
-  --text-3: oklch(50% 0.008 260);
+  --text-3: oklch(56% 0.008 260);
   --accent: oklch(78% 0.14 70);
-  --accent-dim: oklch(55% 0.10 70);
+  --accent-dim: oklch(62% 0.10 70);
   --accent-bg: oklch(20% 0.03 70);
   --green: oklch(72% 0.14 155);
   --green-dim: oklch(30% 0.04 155);
@@ -33,7 +38,8 @@
   --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-html { scroll-behavior: smooth; font-size: clamp(15px, 0.9vw + 11px, 18px); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+html { font-size: clamp(15px, 0.9vw + 11px, 18px); }
 body {
   font-family: var(--font-b);
   color: var(--text);
@@ -67,8 +73,19 @@ nav.hidden { transform: translateY(-100%); }
   font-size: 0.8rem; font-weight: 500;
   transition: color 150ms;
 }
-.nav-links a:hover { color: var(--text); }
+.nav-links a:hover, .nav-links a:focus-visible { color: var(--text); }
 @media (max-width: 640px) { .nav-links { display: none; } }
+
+/* ---- SKIP LINK ---- */
+.skip-link {
+  position: absolute; top: -100%; left: 1rem;
+  background: var(--accent); color: var(--bg);
+  padding: 0.6rem 1.2rem; border-radius: 0 0 6px 6px;
+  font-family: var(--font-m); font-size: 0.8rem;
+  text-decoration: none; z-index: 200;
+  transition: top 150ms;
+}
+.skip-link:focus { top: 0; }
 
 /* ---- LAYOUT ---- */
 .wrap { max-width: 68rem; margin: 0 auto; padding: 0 2rem; }
@@ -169,6 +186,20 @@ nav.hidden { transform: translateY(-100%); }
 .term-body .w { color: var(--text); }   /* white/bright */
 .term-body .a { color: var(--accent-dim); }
 
+/* scroll fade affordance on mobile */
+.term { position: relative; }
+.term::after {
+  content: '';
+  position: absolute; right: 0; top: 2.4rem; bottom: 0;
+  width: 2rem; pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--bg-raised));
+  border-radius: 0 0 10px 0;
+  opacity: 0; transition: opacity 200ms;
+}
+@media (max-width: 640px) {
+  .term::after { opacity: 1; }
+}
+
 /* small term variant */
 .term--sm { font-size: 0.72rem; }
 .term--sm .term-body { padding: 1rem 1.2rem; }
@@ -201,7 +232,6 @@ nav.hidden { transform: translateY(-100%); }
   display: flex; align-items: stretch;
   gap: 2px; margin: 3rem 0;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   padding-bottom: 1rem;
 }
 .pipe {
@@ -214,9 +244,10 @@ nav.hidden { transform: translateY(-100%); }
 }
 .pipe:first-child { border-radius: 8px 0 0 8px; }
 .pipe:last-child { border-radius: 0 8px 8px 0; }
-.pipe:hover {
+.pipe:hover, .pipe:focus-visible {
   border-color: var(--accent-dim);
   background: var(--bg-hover);
+  outline: none;
 }
 .pipe::after {
   content: '';
@@ -281,6 +312,7 @@ nav.hidden { transform: translateY(-100%); }
   width: 1px; flex: 1;
   background: var(--border-2);
 }
+.chain-wire--end { background: transparent; }
 .chain-content {
   grid-column: 2;
   padding: 1.2rem 0 2.5rem 1.2rem;
@@ -336,7 +368,6 @@ nav.hidden { transform: translateY(-100%); }
   gap: 2.5rem;
   align-items: start;
 }
-/* alternating removed — consistent layout */
 .skill-info { padding-top: 0.5rem; }
 .skill-info .sk-cmd {
   font-family: var(--font-m); font-size: 0.85rem;
@@ -373,10 +404,11 @@ nav.hidden { transform: translateY(-100%); }
   margin-bottom: -1px; position: relative; z-index: 1;
 }
 .compare-tab {
-  font-family: var(--font-m); font-size: 0.65rem;
+  font-family: var(--font-m); font-size: 0.72rem;
   font-weight: 500; letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1.2rem;
+  min-height: 44px;
   border: 1px solid var(--border-2);
   border-bottom: none;
   border-radius: 6px 6px 0 0;
@@ -385,6 +417,10 @@ nav.hidden { transform: translateY(-100%); }
   user-select: none;
   background: transparent;
   color: var(--text-3);
+}
+.compare-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 .compare-tab.active {
   background: var(--bg-raised);
@@ -396,13 +432,10 @@ nav.hidden { transform: translateY(-100%); }
   display: none;
 }
 .compare-pane.active { display: block; }
-.compare-pane .term { border-top-left-radius: 0; }
-.compare-pane:first-of-type .term { border-top-left-radius: 0; }
-.compare-pane:last-of-type .term { border-top-left-radius: 0; border-top-right-radius: 0; }
+.compare-pane .term { border-top-left-radius: 0; border-top-right-radius: 0; }
 
 @media (max-width: 860px) {
   .skill-card { grid-template-columns: 1fr; }
-  .skill-card:nth-child(even) { direction: ltr; }
   .skill-info { order: 0; }
   .skill-compare { order: 1; }
 }
@@ -414,7 +447,7 @@ nav.hidden { transform: translateY(-100%); }
   gap: 2rem 3rem;
   margin: 2.5rem 0;
 }
-.int-group h4 {
+.int-group h3 {
   font-family: var(--font-d); font-weight: 600;
   font-size: 1rem; margin-bottom: 1rem;
   color: var(--text);
@@ -453,6 +486,19 @@ nav.hidden { transform: translateY(-100%); }
 }
 .install-code .d { color: var(--text-3); }
 .install-code .c { color: var(--accent); }
+.copy-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  font-family: var(--font-m); font-size: 0.65rem;
+  font-weight: 500; letter-spacing: 0.04em;
+  color: var(--text-3); background: var(--bg-surface);
+  border: 1px solid var(--border-2); border-radius: 4px;
+  padding: 0.3rem 0.6rem; cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+.copy-btn:hover, .copy-btn:focus-visible {
+  color: var(--accent); border-color: var(--accent-dim);
+}
+.copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* ---- CALLOUT ---- */
 .callout {
@@ -498,8 +544,6 @@ nav.hidden { transform: translateY(-100%); }
 footer {
   padding: 4rem 0;
   border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: baseline;
-  flex-wrap: wrap; gap: 1rem;
 }
 footer .f-left {
   font-family: var(--font-m); font-size: 0.75rem;
@@ -508,10 +552,18 @@ footer .f-left {
 footer .f-right {
   font-size: 0.8rem; color: var(--text-3);
 }
-footer .f-right a {
+footer a {
   color: var(--text-2); text-decoration: none;
 }
-footer .f-right a:hover { color: var(--accent); }
+footer a:hover, footer a:focus-visible { color: var(--accent); }
+footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---- UTILITY ---- */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
 
 /* ---- REVEAL ---- */
 .rv {
@@ -527,7 +579,9 @@ footer .f-right a:hover { color: var(--accent); }
 </head>
 <body>
 
-<nav>
+<a href="#flow" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
   <a href="#" class="nav-brand"><span>/</span>dev-cascade</a>
   <ul class="nav-links">
     <li><a href="#flow">Flow</a></li>
@@ -536,6 +590,8 @@ footer .f-right a:hover { color: var(--accent); }
     <li><a href="#install">Install</a></li>
   </ul>
 </nav>
+
+<main>
 
 <section class="hero">
   <div class="wrap">
@@ -671,7 +727,7 @@ footer .f-right a:hover { color: var(--accent); }
         <div class="chain-stage-skill">build + typecheck + test</div>
       </div>
 
-      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire" style="background:transparent"></div></div>
+      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire chain-wire--end"></div></div>
       <div class="chain-content" style="border-bottom:none">
         <div class="chain-stage-label">STAGE 4</div>
         <div class="chain-stage-name">Behavioral</div>
@@ -682,8 +738,9 @@ footer .f-right a:hover { color: var(--accent); }
 
     <div class="skip-wrap rv">
       <table class="skip-t">
+        <caption class="visually-hidden">Smart skip rules by change type</caption>
         <thead><tr>
-          <th>Change type</th><th>Correctness</th><th>Quality</th><th>Mechanical</th><th>Behavioral</th>
+          <th scope="col">Change type</th><th scope="col">Correctness</th><th scope="col">Quality</th><th scope="col">Mechanical</th><th scope="col">Behavioral</th>
         </tr></thead>
         <tbody>
           <tr><td class="type">Feature / Fix</td><td class="on">Run</td><td class="on">Run</td><td class="on">Run</td><td class="on">Run</td></tr>
@@ -1188,7 +1245,7 @@ expiration filters at query time, not write.
 
     <div class="int-grid rv">
       <div class="int-group">
-        <h4>During implementation</h4>
+        <h3>During implementation</h3>
         <ul class="int-list">
           <li><span class="n">/proving-correctness</span><span class="r">pushback + inline checkpoints</span></li>
           <li><span class="n">superpowers:tdd</span><span class="r">tests alongside features</span></li>
@@ -1196,7 +1253,7 @@ expiration filters at query time, not write.
         </ul>
       </div>
       <div class="int-group">
-        <h4>Quality chain</h4>
+        <h3>Quality chain</h3>
         <ul class="int-list">
           <li><span class="n">/proving-correctness</span><span class="r">Gate 3 in subagent</span></li>
           <li><span class="n">/simplify</span><span class="r">3 parallel reviews</span></li>
@@ -1204,14 +1261,14 @@ expiration filters at query time, not write.
         </ul>
       </div>
       <div class="int-group">
-        <h4>Complex work</h4>
+        <h3>Complex work</h3>
         <ul class="int-list">
           <li><span class="n">superpowers:brainstorm</span><span class="r">ideation for 8+ files</span></li>
           <li><span class="n">superpowers:plans</span><span class="r">implementation plans</span></li>
         </ul>
       </div>
       <div class="int-group">
-        <h4>Branch completion</h4>
+        <h3>Branch completion</h3>
         <ul class="int-list">
           <li><span class="n">superpowers:finish</span><span class="r">merge/PR workflow</span></li>
           <li><span class="n">superpowers:worktrees</span><span class="r">isolated workspaces</span></li>
@@ -1299,27 +1356,64 @@ expiration filters at query time, not write.
   </div>
 </section>
 
+</main>
+
 <footer>
-  <div class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:1rem;">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:1rem">
     <div class="f-left"><a href="https://github.com/smillunchick/dev-cascade" style="color:var(--text-3);text-decoration:none;">github.com/smillunchick/dev-cascade</a></div>
     <div class="f-right">8 skills for <a href="https://claude.ai/code">Claude Code</a> + <a href="https://github.com/smillunchick/dev-cascade/blob/master/agents.md">agents.md</a> for everyone else</div>
   </div>
 </footer>
 
 <script>
+// ARIA tab pattern init
+document.querySelectorAll('.skill-compare').forEach((card, ci) => {
+  const tabs = card.querySelector('.compare-tabs');
+  const btns = card.querySelectorAll('.compare-tab');
+  const panes = card.querySelectorAll('.compare-pane');
+  tabs.setAttribute('role', 'tablist');
+  btns.forEach((btn, i) => {
+    const id = 'tab-'+ci+'-'+i;
+    const panelId = 'panel-'+ci+'-'+i;
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('id', id);
+    btn.setAttribute('aria-controls', panelId);
+    btn.setAttribute('aria-selected', btn.classList.contains('active'));
+    panes[i].setAttribute('role', 'tabpanel');
+    panes[i].setAttribute('id', panelId);
+    panes[i].setAttribute('aria-labelledby', id);
+  });
+  // arrow key navigation
+  tabs.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const cur = [...btns].findIndex(b => b.classList.contains('active'));
+      const next = e.key === 'ArrowRight' ? (cur+1) % btns.length : (cur-1+btns.length) % btns.length;
+      btns[next].click();
+      btns[next].focus();
+      e.preventDefault();
+    }
+  });
+});
+
 function switchTab(btn, pane) {
   const card = btn.closest('.skill-compare');
-  card.querySelectorAll('.compare-tab').forEach(t => t.classList.remove('active'));
+  card.querySelectorAll('.compare-tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+  });
   card.querySelectorAll('.compare-pane').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
   card.querySelector('[data-pane="'+pane+'"]').classList.add('active');
 }
 
+// reveal observer
 const obs = new IntersectionObserver(es => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); obs.unobserve(e.target); }});
 }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
+// hide nav on scroll down
 let last = 0;
 const nav = document.querySelector('nav');
 addEventListener('scroll', () => {
@@ -1327,6 +1421,23 @@ addEventListener('scroll', () => {
   nav.classList.toggle('hidden', y > last && y > 80);
   last = y;
 }, { passive: true });
+
+// copy buttons on install blocks
+document.querySelectorAll('.install-code').forEach(block => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copy';
+  btn.setAttribute('aria-label', 'Copy code to clipboard');
+  btn.addEventListener('click', () => {
+    const text = block.textContent.replace(/^Copy/, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+  });
+  block.parentElement.style.position = 'relative';
+  block.parentElement.appendChild(btn);
+});
 </script>
 
 </body>
