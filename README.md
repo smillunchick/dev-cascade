@@ -2,15 +2,25 @@
 
 Eight skills that cascade through the development lifecycle for Claude Code. Each skill invokes the next. The chain catches what you miss.
 
-## Install
+**[Documentation site](https://smillunchick.github.io/dev-cascade/)**
 
-Copy `skills/` into `~/.claude/skills/`:
+## Install — Claude Code
 
 ```bash
-cp -r skills/* ~/.claude/skills/
+git clone https://github.com/smillunchick/dev-cascade.git /tmp/dev-cascade
+cp -r /tmp/dev-cascade/skills/* ~/.claude/skills/
+rm -rf /tmp/dev-cascade
 ```
 
 Then run `/dev-teach` once in any project to scaffold the files the cascade depends on.
+
+## Install — Any Other Agent (Cursor, Windsurf, Aider, Cline)
+
+```bash
+curl -sL https://raw.githubusercontent.com/smillunchick/dev-cascade/master/agents.md -o .cursorrules
+```
+
+Or copy [`agents.md`](agents.md) into your `.windsurfrules`, `AGENTS.md`, system prompt, or whatever your tool uses.
 
 ## The Cascade
 
