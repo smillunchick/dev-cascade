@@ -1236,6 +1236,15 @@ expiration filters at query time, not write.
     </div>
 
     <div class="install-block rv">
+      <div class="install-label">Claude Code — prerequisites</div>
+      <div class="install-code"><span class="d"># Install superpowers (required — cascade composes with it)</span>
+<span class="c">claude install</span> github:coda-oa/superpowers
+
+<span class="d"># superpowers provides: brainstorming, writing-plans, TDD,</span>
+<span class="d"># systematic-debugging, verification, branch completion</span></div>
+    </div>
+
+    <div class="install-block rv">
       <div class="install-label">Claude Code — install skills</div>
       <div class="install-code"><span class="d"># Clone the repo and copy skills into Claude's skill directory</span>
 <span class="c">git clone</span> https://github.com/smillunchick/dev-cascade.git /tmp/dev-cascade
@@ -1248,7 +1257,7 @@ expiration filters at query time, not write.
 
     <div class="install-block rv">
       <div class="install-label">Cursor / Windsurf / Aider / Any LLM Agent</div>
-      <div class="install-code"><span class="d"># Copy agents.md into your project as system instructions</span>
+      <div class="install-code"><span class="d"># Copy agents.md into your project — self-contained, no dependencies</span>
 <span class="c">curl -sL</span> https://raw.githubusercontent.com/smillunchick/dev-cascade/master/agents.md \
   <span class="c">-o</span> .cursorrules   <span class="d"># or .windsurfrules, AGENTS.md, system prompt, etc.</span></div>
     </div>

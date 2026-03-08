@@ -6,13 +6,21 @@ Eight skills that cascade through the development lifecycle for Claude Code. Eac
 
 ## Install — Claude Code
 
+**Prerequisites:** Install [superpowers](https://github.com/coda-oa/superpowers) first — the cascade composes with it for brainstorming, planning, TDD, debugging, verification, and branch completion.
+
+```bash
+claude install github:coda-oa/superpowers
+```
+
+Then install the dev cascade skills:
+
 ```bash
 git clone https://github.com/smillunchick/dev-cascade.git /tmp/dev-cascade
 cp -r /tmp/dev-cascade/skills/* ~/.claude/skills/
 rm -rf /tmp/dev-cascade
 ```
 
-Then run `/dev-teach` once in any project to scaffold the files the cascade depends on.
+Run `/dev-teach` once in any project to scaffold the files the cascade depends on.
 
 ## Install — Any Other Agent (Cursor, Windsurf, Aider, Cline)
 
@@ -51,18 +59,18 @@ These skills are invoked by the cascade and included in this repo:
 | `/proving-correctness` | dev-check (Stage 1), dev-start | Anti-sycophancy gates, correctness proofs |
 | `/simplify` | dev-check (Stage 2) | Code reuse, quality, efficiency reviews |
 
-## Optional Dependencies (Superpowers)
+## Superpowers Dependency
 
-These superpowers skills are referenced but not bundled. Install [superpowers](https://github.com/coda-oa/superpowers) separately:
+The cascade directly invokes these superpowers skills:
 
-- `superpowers:brainstorming` — used by dev-start for complex work
-- `superpowers:writing-plans` — used after brainstorming
-- `superpowers:test-driven-development` — used by dev-start, dev-bug
-- `superpowers:systematic-debugging` — used by dev-bug
-- `superpowers:verification-before-completion` — used by dev-finish
-- `superpowers:finishing-a-development-branch` — used by dev-finish
-
-The cascade works without superpowers — they enhance it but aren't required.
+| Superpowers skill | Used by | When |
+|-------------------|---------|------|
+| `brainstorming` | dev-start | Large complexity (8+ files) |
+| `writing-plans` | dev-start | After brainstorming |
+| `test-driven-development` | dev-start, dev-bug | Feature implementation, regression tests |
+| `systematic-debugging` | dev-bug | Root cause analysis |
+| `verification-before-completion` | dev-finish | Final verification |
+| `finishing-a-development-branch` | dev-finish | Merge/PR workflow |
 
 ## For Non-Claude Agents
 
