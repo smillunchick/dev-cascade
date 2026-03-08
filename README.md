@@ -80,4 +80,4 @@ See [`agents.md`](agents.md) — a self-contained version of the entire workflow
 
 - **[Superpowers](https://github.com/coda-oa/superpowers)** — the agent skill system for Claude Code
 - **[Impeccable](https://impeccable.style)** — the cascading skill pattern
-- **[GSD 2.0](https://www.lennysnewsletter.com/p/how-to-build-anything-with-ai-gsd)** — Boris Cherny's multi-session AI coding framework (fractal summaries, boundary maps, continue-here files, don't hand-roll)
+- **[GSD 2.0](https://www.lennysnewsletter.com/p/how-to-build-anything-with-ai-gsd)** — multi-session AI coding framework via Lenny Rachitsky (fractal summaries, boundary maps, continue-here files, don't hand-roll)
