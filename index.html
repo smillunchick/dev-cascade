@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Cascade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: oklch(12% 0.008 260);
+  --bg-raised: oklch(15.5% 0.01 260);
+  --bg-surface: oklch(18% 0.012 260);
+  --bg-hover: oklch(20% 0.012 260);
+  --text: oklch(92% 0.008 80);
+  --text-2: oklch(70% 0.01 80);
+  --text-3: oklch(50% 0.008 260);
+  --accent: oklch(78% 0.14 70);
+  --accent-dim: oklch(55% 0.10 70);
+  --accent-bg: oklch(20% 0.03 70);
+  --green: oklch(72% 0.14 155);
+  --green-dim: oklch(30% 0.04 155);
+  --red: oklch(68% 0.15 25);
+  --border: oklch(22% 0.008 260);
+  --border-2: oklch(28% 0.01 260);
+  --font-d: 'Newsreader', Georgia, serif;
+  --font-b: 'Instrument Sans', system-ui, sans-serif;
+  --font-m: 'JetBrains Mono', 'SF Mono', monospace;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: smooth; font-size: clamp(15px, 0.9vw + 11px, 18px); }
+body {
+  font-family: var(--font-b);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--accent); color: var(--bg); }
+
+/* ---- NAV ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0.9rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: color-mix(in oklch, var(--bg) 90%, transparent);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+  transition: transform 300ms var(--ease);
+}
+nav.hidden { transform: translateY(-100%); }
+.nav-brand {
+  font-family: var(--font-m); font-weight: 500;
+  font-size: 0.8rem; color: var(--text-2);
+  text-decoration: none; letter-spacing: 0.04em;
+}
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-3); text-decoration: none;
+  font-size: 0.8rem; font-weight: 500;
+  transition: color 150ms;
+}
+.nav-links a:hover { color: var(--text); }
+@media (max-width: 640px) { .nav-links { display: none; } }
+
+/* ---- LAYOUT ---- */
+.wrap { max-width: 68rem; margin: 0 auto; padding: 0 2rem; }
+.wrap--wide { max-width: 80rem; }
+.wrap--narrow { max-width: 48rem; }
+
+/* ---- HERO ---- */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 8rem 0 6rem;
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(3.2rem, 5.5vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin-bottom: 2rem;
+}
+.hero h1 strong {
+  font-weight: 600;
+  color: var(--accent);
+}
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 28rem;
+}
+.hero-cmd {
+  font-family: var(--font-m);
+  font-size: 0.85rem;
+  color: var(--accent);
+  background: var(--accent-bg);
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid oklch(30% 0.04 70);
+}
+.hero-cmd .prompt { color: var(--text-3); }
+
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-demo { order: -1; }
+}
+
+/* ---- TERMINAL WINDOWS ---- */
+.term {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: var(--font-m);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.term-bar {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: oklch(14% 0.006 260);
+  border-bottom: 1px solid var(--border);
+}
+.term-dots {
+  display: flex; gap: 5px;
+}
+.term-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border-2);
+}
+.term-dot.r { background: oklch(55% 0.12 25); }
+.term-dot.y { background: oklch(60% 0.12 85); }
+.term-dot.g { background: oklch(55% 0.12 155); }
+.term-title {
+  flex: 1; text-align: center;
+  font-size: 0.7rem; color: var(--text-3);
+  font-family: var(--font-b); font-weight: 500;
+}
+.term-body {
+  padding: 1.2rem 1.4rem;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text-2);
+}
+.term-body .p { color: var(--text-3); } /* prompt char */
+.term-body .c { color: var(--accent); } /* command */
+.term-body .g { color: var(--green); }  /* green/pass */
+.term-body .r { color: var(--red); }    /* red/fail */
+.term-body .d { color: var(--text-3); } /* dim */
+.term-body .w { color: var(--text); }   /* white/bright */
+.term-body .a { color: var(--accent-dim); }
+
+/* small term variant */
+.term--sm { font-size: 0.72rem; }
+.term--sm .term-body { padding: 1rem 1.2rem; }
+
+/* ---- SECTION RHYTHM ---- */
+.s { padding: 7rem 0; }
+.s--alt { background: var(--bg-raised); }
+.s-head { margin-bottom: 3.5rem; }
+.s-label {
+  font-family: var(--font-m); font-size: 0.7rem;
+  font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent-dim);
+  margin-bottom: 1rem;
+}
+.s-title {
+  font-family: var(--font-d);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 300; line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.s-title strong { font-weight: 600; }
+.s-desc {
+  font-size: 1.05rem; color: var(--text-2);
+  max-width: 38rem; line-height: 1.55;
+}
+
+/* ---- FLOW PIPELINE ---- */
+.pipeline {
+  display: flex; align-items: stretch;
+  gap: 2px; margin: 3rem 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem;
+}
+.pipe {
+  flex: 1; min-width: 9rem;
+  background: var(--bg-surface);
+  padding: 1.5rem 1.2rem;
+  position: relative;
+  border: 1px solid var(--border);
+  transition: border-color 200ms, background 200ms;
+}
+.pipe:first-child { border-radius: 8px 0 0 8px; }
+.pipe:last-child { border-radius: 0 8px 8px 0; }
+.pipe:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-hover);
+}
+.pipe::after {
+  content: '';
+  position: absolute; right: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid var(--border-2);
+  z-index: 1;
+}
+.pipe:last-child::after { display: none; }
+.pipe-name {
+  font-family: var(--font-m); font-size: 0.75rem;
+  font-weight: 500; color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.pipe-desc {
+  font-size: 0.8rem; color: var(--text-3);
+  line-height: 1.4;
+}
+
+/* side branches */
+.pipe-branches {
+  display: flex; gap: 1.5rem;
+  margin-top: 1.5rem; flex-wrap: wrap;
+}
+.pipe-branch {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.78rem; color: var(--text-3);
+  padding: 0.5rem 1rem;
+  border: 1px dashed var(--border-2);
+  border-radius: 6px;
+}
+.pipe-branch code {
+  font-family: var(--font-m);
+  color: var(--accent-dim);
+  font-size: 0.75rem;
+}
+
+/* ---- QUALITY CHAIN ---- */
+.chain-grid {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 0;
+  position: relative;
+}
+.chain-line {
+  grid-column: 1;
+  display: flex; flex-direction: column; align-items: center;
+}
+.chain-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--border-2);
+  border: 2px solid var(--bg);
+  z-index: 1;
+  flex-shrink: 0;
+  margin-top: 1.8rem;
+}
+.chain-dot.active { background: var(--accent); }
+.chain-wire {
+  width: 1px; flex: 1;
+  background: var(--border-2);
+}
+.chain-content {
+  grid-column: 2;
+  padding: 1.2rem 0 2.5rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.chain-content:last-of-type { border-bottom: none; }
+.chain-stage-label {
+  font-family: var(--font-m); font-size: 0.7rem;
+  color: var(--text-3); letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+.chain-stage-name {
+  font-family: var(--font-d); font-size: 1.3rem;
+  font-weight: 600; margin-bottom: 0.4rem;
+}
+.chain-stage-desc {
+  font-size: 0.9rem; color: var(--text-2);
+  max-width: 36rem; line-height: 1.5;
+}
+.chain-stage-skill {
+  font-family: var(--font-m); font-size: 0.75rem;
+  color: var(--accent-dim); margin-top: 0.6rem;
+  display: inline-block;
+}
+
+/* ---- SKIP TABLE ---- */
+.skip-wrap { overflow-x: auto; margin: 2.5rem 0; }
+.skip-t {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem; min-width: 36rem;
+}
+.skip-t th {
+  font-family: var(--font-m); font-weight: 500;
+  font-size: 0.7rem; letter-spacing: 0.04em;
+  color: var(--text-3); text-align: left;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border-2);
+}
+.skip-t td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.skip-t tbody tr:hover { background: var(--bg-surface); }
+.skip-t .on { color: var(--green); font-weight: 600; }
+.skip-t .off { color: var(--text-3); font-style: italic; font-size: 0.8rem; }
+.skip-t .type { font-weight: 600; white-space: nowrap; }
+
+/* ---- SKILL CARDS W/ BEFORE/AFTER ---- */
+.skill-cards { display: flex; flex-direction: column; gap: 4rem; margin: 2.5rem 0; }
+.skill-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+/* alternating removed — consistent layout */
+.skill-info { padding-top: 0.5rem; }
+.skill-info .sk-cmd {
+  font-family: var(--font-m); font-size: 0.85rem;
+  color: var(--accent); font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.skill-info .sk-headline {
+  font-family: var(--font-d); font-size: 1.4rem;
+  font-weight: 600; line-height: 1.25;
+  margin-bottom: 0.8rem;
+}
+.skill-info .sk-desc {
+  font-size: 0.9rem; color: var(--text-2);
+  line-height: 1.55; margin-bottom: 1rem;
+}
+.skill-info ul { list-style: none; padding: 0; margin: 0; }
+.skill-info li {
+  font-size: 0.82rem; color: var(--text-3);
+  padding: 0.3rem 0;
+  display: flex; gap: 0.5rem;
+}
+.skill-info li::before {
+  content: ''; display: block;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent-dim);
+  margin-top: 0.5em; flex-shrink: 0;
+}
+.skill-info li strong { color: var(--text-2); }
+
+/* before/after comparison */
+.skill-compare { position: relative; }
+.compare-tabs {
+  display: flex; gap: 0;
+  margin-bottom: -1px; position: relative; z-index: 1;
+}
+.compare-tab {
+  font-family: var(--font-m); font-size: 0.65rem;
+  font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-2);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+  user-select: none;
+  background: transparent;
+  color: var(--text-3);
+}
+.compare-tab.active {
+  background: var(--bg-raised);
+  color: var(--text);
+}
+.compare-tab.tab-before.active { color: var(--red); }
+.compare-tab.tab-after.active { color: var(--green); }
+.compare-pane {
+  display: none;
+}
+.compare-pane.active { display: block; }
+.compare-pane .term { border-top-left-radius: 0; }
+.compare-pane:first-of-type .term { border-top-left-radius: 0; }
+.compare-pane:last-of-type .term { border-top-left-radius: 0; border-top-right-radius: 0; }
+
+@media (max-width: 860px) {
+  .skill-card { grid-template-columns: 1fr; }
+  .skill-card:nth-child(even) { direction: ltr; }
+  .skill-info { order: 0; }
+  .skill-compare { order: 1; }
+}
+
+/* ---- INTEGRATIONS ---- */
+.int-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem 3rem;
+  margin: 2.5rem 0;
+}
+.int-group h4 {
+  font-family: var(--font-d); font-weight: 600;
+  font-size: 1rem; margin-bottom: 1rem;
+  color: var(--text);
+}
+.int-list { list-style: none; }
+.int-list li {
+  padding: 0.4rem 0; font-size: 0.85rem;
+  display: flex; gap: 0.6rem; align-items: baseline;
+}
+.int-list .n {
+  font-family: var(--font-m); font-size: 0.78rem;
+  color: var(--accent-dim); min-width: 8rem;
+}
+.int-list .r { color: var(--text-3); }
+
+/* ---- INSTALL ---- */
+.install-block {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  overflow: hidden;
+}
+.install-label {
+  padding: 0.8rem 1.2rem;
+  font-family: var(--font-b); font-size: 0.8rem;
+  font-weight: 600; color: var(--text-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+.install-code {
+  padding: 1.2rem 1.4rem;
+  font-family: var(--font-m); font-size: 0.8rem;
+  line-height: 1.8; color: var(--text-2);
+  overflow-x: auto; white-space: pre;
+}
+.install-code .d { color: var(--text-3); }
+.install-code .c { color: var(--accent); }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-left: 2px solid var(--accent-dim);
+  padding: 1.5rem 2rem;
+  margin: 3rem 0;
+}
+.callout p {
+  font-family: var(--font-d); font-size: 1.1rem;
+  font-style: italic; font-weight: 300;
+  color: var(--text-2); line-height: 1.55;
+}
+.callout cite {
+  display: block; font-style: normal;
+  font-family: var(--font-m); font-size: 0.75rem;
+  color: var(--text-3); margin-top: 0.8rem;
+}
+
+/* ---- ATTRIBUTION ---- */
+.attrib-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.attrib {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-2);
+}
+.attrib-name {
+  font-family: var(--font-d); font-weight: 600;
+  font-size: 1.05rem; margin-bottom: 0.6rem;
+  color: var(--text);
+}
+.attrib-desc {
+  font-size: 0.85rem; color: var(--text-3);
+  line-height: 1.55;
+}
+@media (max-width: 720px) {
+  .attrib-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- FOOTER ---- */
+footer {
+  padding: 4rem 0;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: baseline;
+  flex-wrap: wrap; gap: 1rem;
+}
+footer .f-left {
+  font-family: var(--font-m); font-size: 0.75rem;
+  color: var(--text-3);
+}
+footer .f-right {
+  font-size: 0.8rem; color: var(--text-3);
+}
+footer .f-right a {
+  color: var(--text-2); text-decoration: none;
+}
+footer .f-right a:hover { color: var(--accent); }
+
+/* ---- REVEAL ---- */
+.rv {
+  opacity: 0; transform: translateY(1.2rem);
+  transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+}
+.rv.v { opacity: 1; transform: none; }
+.rv-s > .rv { transition-delay: calc(var(--i, 0) * 60ms); }
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; transition: opacity 200ms ease; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand"><span>/</span>dev-cascade</a>
+  <ul class="nav-links">
+    <li><a href="#flow">Flow</a></li>
+    <li><a href="#chain">Quality Chain</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#install">Install</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="rv-s">
+        <h1 class="rv" style="--i:0">Ship fast.<br>Ship <strong>correct.</strong></h1>
+        <p class="hero-sub rv" style="--i:1">
+          Eight skills that cascade through the development lifecycle.
+          Each one invokes the next. The chain catches what you miss.
+        </p>
+        <div class="hero-cmd rv" style="--i:2">
+          <span class="prompt">$</span> /dev-start feat memory-ttl
+        </div>
+      </div>
+      <div class="hero-demo rv" style="--i:3">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+            <div class="term-title">~/wintermute</div>
+          </div>
+          <div class="term-body"><span class="p">$</span> <span class="c">/dev-start</span> feat memory-ttl
+
+<span class="d">Branch:</span>  <span class="w">feat/memory-ttl</span>
+<span class="d">Target:</span>  <span class="w">v0.4.0</span> <span class="d">(from ROADMAP)</span>
+<span class="d">Context:</span> <span class="w">2 related items found</span>
+
+<span class="a">Don't hand-roll check:</span>
+  <span class="g">&#10003;</span> No existing TTL util in codebase
+  <span class="g">&#10003;</span> No npm package needed — FTS5 handles it
+
+<span class="a">Gray area:</span>
+  <span class="d">?</span> TTL per-agent or global?
+  <span class="d">?</span> Expired memories: soft-delete or hard-delete?
+
+<span class="a">Boundary map:</span>
+  <span class="d">produces</span> recallWithTTL() → MemoryResult[]
+  <span class="d">consumes</span> db.memories, agentConfig.memoryTTL
+
+<span class="g">Ready to implement.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section id="flow" class="s">
+  <div class="wrap">
+    <div class="s-head rv">
+      <div class="s-label">the flow</div>
+      <h2 class="s-title">Each skill invokes <strong>the next</strong></h2>
+      <p class="s-desc">
+        Independently invokable. Naturally cascading.
+        You don't memorize the workflow — the skills guide you through it.
+      </p>
+    </div>
+
+    <div class="pipeline rv">
+      <div class="pipe">
+        <div class="pipe-name">/dev-start</div>
+        <div class="pipe-desc">Branch, context, boundary map</div>
+      </div>
+      <div class="pipe">
+        <div class="pipe-name">implement</div>
+        <div class="pipe-desc">/proving-correctness gates active</div>
+      </div>
+      <div class="pipe">
+        <div class="pipe-name">/dev-check</div>
+        <div class="pipe-desc">4-stage quality chain</div>
+      </div>
+      <div class="pipe">
+        <div class="pipe-name">/dev-commit</div>
+        <div class="pipe-desc">Conventional format + discipline</div>
+      </div>
+      <div class="pipe">
+        <div class="pipe-name">/dev-finish</div>
+        <div class="pipe-desc">Docs, summaries, merge</div>
+      </div>
+      <div class="pipe">
+        <div class="pipe-name">/dev-ship</div>
+        <div class="pipe-desc">Version, tag, deploy</div>
+      </div>
+    </div>
+
+    <div class="pipe-branches rv">
+      <div class="pipe-branch">
+        interruption? <code>/dev-pause</code> &hellip; <code>/dev-start</code> resumes
+      </div>
+      <div class="pipe-branch">
+        found a bug? <code>/dev-bug</code> &rarr; fix &rarr; check &rarr; commit
+      </div>
+      <div class="pipe-branch">
+        new project? <code>/dev-teach</code> scaffolds everything
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAIN ============ -->
+<section id="chain" class="s s--alt">
+  <div class="wrap">
+    <div class="s-head rv">
+      <div class="s-label">the quality chain</div>
+      <h2 class="s-title"><strong>/dev-check</strong> before every commit</h2>
+      <p class="s-desc">
+        Four stages. In order. Smart skip rules prevent unnecessary work —
+        doc-only commits fly through, feature code gets the full treatment.
+      </p>
+    </div>
+
+    <div class="chain-grid rv" style="max-width: 42rem;">
+      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire"></div></div>
+      <div class="chain-content">
+        <div class="chain-stage-label">STAGE 1 &middot; SUBAGENT</div>
+        <div class="chain-stage-name">Correctness</div>
+        <div class="chain-stage-desc">Per-file proofs: why it's correct, why it's not over-engineered, why performance is acceptable. Runs in a subagent — verbose reasoning stays out of your context window.</div>
+        <div class="chain-stage-skill">/proving-correctness</div>
+      </div>
+
+      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire"></div></div>
+      <div class="chain-content">
+        <div class="chain-stage-label">STAGE 2 &middot; 3 PARALLEL AGENTS</div>
+        <div class="chain-stage-name">Quality</div>
+        <div class="chain-stage-desc">Code reuse opportunities. Quality issues (redundant state, copy-paste, leaky abstractions). Efficiency (N+1 queries, missed concurrency, hot-path bloat).</div>
+        <div class="chain-stage-skill">/simplify</div>
+      </div>
+
+      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire"></div></div>
+      <div class="chain-content">
+        <div class="chain-stage-label">STAGE 3</div>
+        <div class="chain-stage-name">Mechanical</div>
+        <div class="chain-stage-desc">Build, typecheck, test. All three pass or you don't proceed. If a fix touches earlier stages, re-run from there.</div>
+        <div class="chain-stage-skill">build + typecheck + test</div>
+      </div>
+
+      <div class="chain-line"><div class="chain-dot active"></div><div class="chain-wire" style="background:transparent"></div></div>
+      <div class="chain-content" style="border-bottom:none">
+        <div class="chain-stage-label">STAGE 4</div>
+        <div class="chain-stage-name">Behavioral</div>
+        <div class="chain-stage-desc">Beyond "tests pass" — does it actually work? Call the endpoint. Run the command. One smoke check that the thing you built does the thing.</div>
+        <div class="chain-stage-skill">context-specific</div>
+      </div>
+    </div>
+
+    <div class="skip-wrap rv">
+      <table class="skip-t">
+        <thead><tr>
+          <th>Change type</th><th>Correctness</th><th>Quality</th><th>Mechanical</th><th>Behavioral</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="type">Feature / Fix</td><td class="on">Run</td><td class="on">Run</td><td class="on">Run</td><td class="on">Run</td></tr>
+          <tr><td class="type">Refactor</td><td class="off">skip — tests are proof</td><td class="on">Run</td><td class="on">Run</td><td class="off">skip</td></tr>
+          <tr><td class="type">Docs only</td><td class="off">skip</td><td class="off">skip</td><td class="off">skip</td><td class="off">skip</td></tr>
+          <tr><td class="type">Tests only</td><td class="off">skip</td><td class="on">Run</td><td class="on">Run</td><td class="off">skip</td></tr>
+          <tr><td class="type">Config</td><td class="on">Run</td><td class="off">skip</td><td class="on">Run</td><td class="on">Run</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ SKILLS ============ -->
+<section id="skills" class="s s--alt">
+  <div class="wrap wrap--wide">
+    <div class="s-head rv">
+      <div class="s-label">the skills</div>
+      <h2 class="s-title">Before and <strong>after</strong></h2>
+      <p class="s-desc">Each skill replaces a bad habit with a disciplined one. Toggle to see what changes.</p>
+    </div>
+
+    <div class="skill-cards">
+
+      <!-- /dev-start -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-start</div>
+          <div class="sk-headline">Context before code</div>
+          <div class="sk-desc">Loads project context, searches for existing solutions, forces decisions on ambiguous choices, and maps interfaces before a single line gets written.</div>
+          <ul>
+            <li><strong>Don't hand-roll</strong> — searches codebase, deps, stdlib first</li>
+            <li><strong>Gray areas</strong> — forces concrete choices before coding</li>
+            <li><strong>Boundary maps</strong> — declares produces/consumes for 3+ file changes</li>
+            <li><strong>Session resume</strong> — loads <strong>.continue-here.md</strong> from /dev-pause</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-start</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">git checkout -b add-ttl</span>
+<span class="p">$</span> <span class="w">vim src/memory.ts</span>
+
+<span class="d"># 45 min later...</span>
+<span class="r">Wait, there's already a TTL helper in utils/</span>
+<span class="r">And the interface changed in v0.3</span>
+<span class="r">Should this be per-agent? Didn't think about it</span>
+<span class="r">Types don't match what the caller expects</span>
+
+<span class="d"># rewrites from scratch</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-start</span> feat memory-ttl
+
+<span class="d">Context:</span> <span class="w">2 ROADMAP items, target v0.4.0</span>
+<span class="a">Don't hand-roll:</span>
+  <span class="g">&#10003;</span> No existing TTL util
+  <span class="g">&#10003;</span> FTS5 handles it natively
+
+<span class="a">Gray area:</span>
+  <span class="w">TTL per-agent or global?</span> → per-agent
+  <span class="w">Soft-delete or hard?</span> → soft-delete
+
+<span class="a">Boundary map:</span>
+  <span class="d">produces</span> recallWithTTL() → MemoryResult[]
+  <span class="d">consumes</span> db.memories, agentConfig.memoryTTL
+
+<span class="g">Ready to implement.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-check -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-check</div>
+          <div class="sk-headline">Tests pass is not enough</div>
+          <div class="sk-desc">Four stages catch what tests miss: correctness proofs in a subagent, code quality review, mechanical gates, then a real behavioral smoke check.</div>
+          <ul>
+            <li><strong>Subagent isolation</strong> — correctness proofs stay out of context</li>
+            <li><strong>Smart skips</strong> — doc-only commits fly through</li>
+            <li><strong>Behavioral check</strong> — actually runs the feature</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-check</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">npm test</span>
+<span class="g">&#10003; 991 tests pass</span>
+
+<span class="w">LGTM, shipping it.</span>
+
+<span class="d"># Two days later...</span>
+<span class="r">[PROD] recall() returns 50,000 rows</span>
+<span class="r">[PROD] query takes 14 seconds</span>
+<span class="r">[PROD] OOM kill on agent-memory</span>
+
+<span class="d"># The query had no LIMIT clause.</span>
+<span class="d"># Tests used a 10-row fixture.</span>
+<span class="d"># Nobody checked real-world behavior.</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="w">Quality chain: PASS</span>
+
+<span class="d">Correctness (subagent):</span>
+  <span class="g">&#10003;</span> recallWithTTL — <span class="g">CORRECT</span>
+    FTS5 bounded by LIMIT, O(log n)
+  <span class="a">FLAG:</span> recall() has no default LIMIT
+    → <span class="g">Fixed: added LIMIT 100 default</span>
+
+<span class="d">Simplify:</span> <span class="g">&#10003;</span> clean
+<span class="d">Gates:</span>  <span class="g">&#10003;</span> build  <span class="g">&#10003;</span> types  <span class="g">&#10003;</span> 991 tests
+<span class="d">Behavioral:</span>
+  <span class="g">&#10003;</span> recall with maxAge=3600 → 12 results
+  <span class="g">&#10003;</span> without maxAge → capped at 100
+
+<span class="g">Ready to commit.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-commit -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-commit</div>
+          <div class="sk-headline">Commits that explain why</div>
+          <div class="sk-desc">Conventional commits format with project-specific scopes. The body explains decisions, not diffs. If the message needs "and", it's two commits.</div>
+          <ul>
+            <li><strong>Pre-gate</strong> — runs /dev-check if it hasn't been run</li>
+            <li><strong>Imperative mood</strong> — "add", not "added" or "adds"</li>
+            <li><strong>Split signals</strong> — detects multi-concern commits</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-commit</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">git commit -m "fixed stuff"</span>
+
+<span class="p">$</span> <span class="w">git log --oneline -5</span>
+<span class="d">a3f2c1d</span> fixed stuff
+<span class="d">b8e4a2f</span> updates
+<span class="d">c1d9e3a</span> wip
+<span class="d">d4f2b1c</span> more changes and fixes and cleanup
+<span class="d">e7a3c2d</span> misc
+
+<span class="d"># 3 months later: git blame → "fixed stuff"</span>
+<span class="d"># Why was this line changed? Nobody knows.</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="c">feat(memory): add TTL-based expiration</span>
+
+Memories older than their TTL are excluded
+from recall queries. FTS5 index stays intact;
+expiration filters at query time, not write.
+
+<span class="d">Decided: per-agent TTL (user preference)</span>
+<span class="d">Decided: soft-delete with weekly sweep</span>
+
+<span class="d">Scope check:</span>
+  <span class="g">&#10003;</span> One logical change
+  <span class="g">&#10003;</span> 3 files changed
+  <span class="g">&#10003;</span> Imperative mood
+  <span class="g">&#10003;</span> Body explains WHY
+
+<span class="g">[feat/memory-ttl abc1234] committed</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-pause -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-pause</div>
+          <div class="sk-headline">Decisions are expensive. Don't make them twice.</div>
+          <div class="sk-desc">Captures completed work, remaining tasks, decisions made, and the exact next action into a compressed handoff file. The next session starts at full speed.</div>
+          <ul>
+            <li><strong>~500 words max</strong> — decisions, not deliberations</li>
+            <li><strong>Ephemeral</strong> — consumed and deleted by /dev-start</li>
+            <li><strong>Prevents re-debate</strong> — records WHY, not just WHAT</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-pause</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project — next day</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">git log --oneline -3</span>
+<span class="d">a3f2c1d</span> wip memory ttl
+<span class="d">b8e4a2f</span> wip
+<span class="d">c1d9e3a</span> more wip
+
+<span class="r">Where was I?</span>
+<span class="d"># Reads 6 files to reconstruct context</span>
+<span class="d"># Re-debates per-agent vs global TTL</span>
+<span class="d"># Forgets the soft-delete decision</span>
+<span class="d"># Implements hard-delete (contradicts yesterday)</span>
+
+<span class="r"># 40 minutes lost to context reconstruction</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project — next day</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-start</span>
+
+<span class="a">Found .continue-here.md — resuming</span>
+
+<span class="d">Branch:</span>  <span class="w">feat/memory-ttl</span>
+<span class="d">Done:</span>    <span class="w">recall filtering, types, tests</span>
+<span class="d">Left:</span>    <span class="w">cleanup sweep job, config docs</span>
+
+<span class="d">Decisions (don't re-debate):</span>
+  per-agent TTL (user preference)
+  soft-delete with weekly sweep
+
+<span class="d">Next action:</span>
+  <span class="w">Implement scheduledCleanup()</span>
+  <span class="w">in engine/memory-engine.ts</span>
+
+<span class="g">&#10003;</span> <span class="g">Resuming from exact stopping point</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-bug -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-bug</div>
+          <div class="sk-headline">Bugs don't come back</div>
+          <div class="sk-desc">Severity classification, mandatory regression tests, systematic root-cause analysis. The test must fail first, then pass after the fix. Non-negotiable.</div>
+          <ul>
+            <li><strong>P0/P1/P2</strong> — severity drives response urgency</li>
+            <li><strong>TDD regression</strong> — test fails → fix → test passes</li>
+            <li><strong>Paper trail</strong> — bugs.md, ROADMAP, Fixes: footer, CHANGELOG</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-bug</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="r">Bug: sessions leak on timeout</span>
+
+<span class="p">$</span> <span class="w">vim src/session.ts</span>
+<span class="d"># "I think it's this line"</span>
+<span class="d"># Changes the timeout handler</span>
+
+<span class="p">$</span> <span class="w">npm test</span>
+<span class="g">&#10003; 991 tests pass</span>
+<span class="w">Fixed. Shipping.</span>
+
+<span class="d"># 2 weeks later...</span>
+<span class="r">[PROD] sessions still leaking on timeout</span>
+<span class="d"># Wrong root cause. No regression test.</span>
+<span class="d"># Bug comes back the same way.</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="r">[P1]</span> <span class="w">Session leak on timeout</span>
+
+<span class="d">Logged:</span>  <span class="w">docs/bugs.md</span>   <span class="g">&#10003;</span>
+<span class="d">Branch:</span> <span class="w">fix/session-leak-on-timeout</span>
+
+<span class="a">Step 1: reproduce</span>
+  <span class="w">Wrote: session-timeout.test.ts</span>
+  <span class="r">&#10007; FAILS — leak confirmed</span>
+
+<span class="a">Step 2: root cause (/systematic-debugging)</span>
+  <span class="w">clearTimeout called on wrong handle</span>
+
+<span class="a">Step 3: fix + verify</span>
+  <span class="g">&#10003; PASSES — leak gone</span>
+
+<span class="a">Step 4: full chain</span>
+  <span class="g">&#10003; /dev-check PASS (992 tests)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-finish -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-finish</div>
+          <div class="sk-headline">Work isn't done until the docs reflect reality</div>
+          <div class="sk-desc">Fractal summaries at three tiers — commit body, CHANGELOG, build journal. Updates ROADMAP, closes bug entries, then hands off for merge.</div>
+          <ul>
+            <li><strong>Three-tier summaries</strong> — each regenerated from source, never re-compressed</li>
+            <li><strong>Doc sync</strong> — ROADMAP, CHANGELOG, bugs.md updated</li>
+            <li><strong>Branch completion</strong> — merge, PR, or discard via superpowers</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-finish</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">git checkout main</span>
+<span class="p">$</span> <span class="w">git merge feat/memory-ttl</span>
+<span class="p">$</span> <span class="w">git branch -d feat/memory-ttl</span>
+
+<span class="w">Done!</span>
+
+<span class="d"># ROADMAP still says "planned"</span>
+<span class="d"># CHANGELOG has no entry</span>
+<span class="d"># No build journal for the architecture</span>
+<span class="d"># New dev asks "why soft-delete?"</span>
+<span class="d"># Nobody remembers. Re-debates it.</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-finish</span>
+
+<span class="d">Verification:</span> <span class="g">&#10003;</span> all gates pass
+<span class="d">CHANGELOG:</span>  <span class="g">&#10003;</span> <span class="w">feat: add TTL-based memory expiration</span>
+<span class="d">ROADMAP:</span>   <span class="g">&#10003;</span> <span class="w">memory-ttl → done (v0.4.0)</span>
+<span class="d">Journal:</span>   <span class="g">&#10003;</span> <span class="w">decisions + trade-offs recorded</span>
+
+<span class="a">Branch completion options:</span>
+  <span class="w">1.</span> Merge locally (fast-forward)
+  <span class="w">2.</span> Push and create PR
+  <span class="w">3.</span> Keep branch as-is
+  <span class="w">4.</span> Discard
+
+<span class="g">Merged to main. Branch deleted.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-teach -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-teach</div>
+          <div class="sk-headline">One-time project setup</div>
+          <div class="sk-desc">Scans the project for conventions, asks targeted questions, scaffolds everything the cascade depends on. Run once, work forever.</div>
+          <ul>
+            <li><strong>Auto-discovery</strong> — reads package.json, tsconfig, git log</li>
+            <li><strong>Scaffolds</strong> — CLAUDE.md, ref/workflow.md, ROADMAP, CHANGELOG, docs/bugs.md</li>
+            <li><strong>Language-agnostic</strong> — TypeScript, Python, Rust, Go</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-teach</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/new-project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-start</span> feat auth-flow
+
+<span class="r">No CLAUDE.md found</span>
+<span class="r">No ROADMAP.md found</span>
+<span class="r">No CHANGELOG.md found</span>
+<span class="r">No docs/bugs.md found</span>
+<span class="r">No commit scopes defined</span>
+<span class="r">No gate commands configured</span>
+
+<span class="d"># Every skill degrades to generic mode</span>
+<span class="d"># No project-specific context</span>
+<span class="d"># Manual setup of each file, one by one</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/new-project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-teach</span>
+
+<span class="a">Scanning project...</span>
+  <span class="d">Language:</span>  <span class="w">TypeScript (tsconfig.json)</span>
+  <span class="d">Test:</span>      <span class="w">vitest (vitest.config.ts)</span>
+  <span class="d">Commits:</span>  <span class="w">conventional — feat, fix, chore</span>
+
+<span class="a">Quick questions:</span>
+  Commit scopes? <span class="w">engine, api, config, db</span>
+  Deploy target? <span class="w">npm publish</span>
+
+<span class="g">&#10003;</span> CLAUDE.md        <span class="d">(workflow section added)</span>
+<span class="g">&#10003;</span> ref/workflow.md  <span class="d">(full reference)</span>
+<span class="g">&#10003;</span> ROADMAP.md       <span class="d">(version structure)</span>
+<span class="g">&#10003;</span> CHANGELOG.md     <span class="d">(Unreleased section)</span>
+<span class="g">&#10003;</span> docs/bugs.md     <span class="d">(empty, ready)</span>
+
+<span class="g">Project ready. Start with /dev-start</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /dev-ship -->
+      <div class="skill-card rv">
+        <div class="skill-info">
+          <div class="sk-cmd">/dev-ship</div>
+          <div class="sk-headline">Release with confidence</div>
+          <div class="sk-desc">Reviews commits since last tag, suggests appropriate version bump, updates all tracking docs, tags, and deploys. The full release in one command.</div>
+          <ul>
+            <li><strong>Semver</strong> — reviews commits to suggest patch/minor/major</li>
+            <li><strong>Full checklist</strong> — gates, CHANGELOG, version, tag, journal, deploy</li>
+            <li><strong>Post-deploy verify</strong> — checks the release actually works</li>
+          </ul>
+        </div>
+        <div class="skill-compare">
+          <div class="compare-tabs">
+            <button class="compare-tab tab-before active" onclick="switchTab(this,'before')">Without</button>
+            <button class="compare-tab tab-after" onclick="switchTab(this,'after')">With /dev-ship</button>
+          </div>
+          <div class="compare-pane active" data-pane="before">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="w">npm version patch</span>
+<span class="p">$</span> <span class="w">git push --tags</span>
+<span class="p">$</span> <span class="w">npm publish</span>
+
+<span class="d"># Forgot to update CHANGELOG</span>
+<span class="d"># ROADMAP still says v0.3.x</span>
+<span class="d"># Should have been minor, not patch</span>
+<span class="d"># Build journal? What build journal?</span>
+<span class="d"># Didn't verify the publish worked</span>
+
+<span class="r">npm info: v0.3.4 has no CHANGELOG entry</span></div>
+            </div>
+          </div>
+          <div class="compare-pane" data-pane="after">
+            <div class="term term--sm">
+              <div class="term-bar"><div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div><div class="term-title">~/project</div></div>
+              <div class="term-body"><span class="p">$</span> <span class="c">/dev-ship</span>
+
+<span class="d">Since v0.3.3:</span> <span class="w">2 feat, 1 fix → minor bump</span>
+<span class="d">Suggested:</span>  <span class="w">v0.4.0</span>
+
+<span class="g">&#10003;</span> Gates pass
+<span class="g">&#10003;</span> CHANGELOG updated (2 Added, 1 Fixed)
+<span class="g">&#10003;</span> Version bumped to 0.4.0
+<span class="g">&#10003;</span> ROADMAP marked complete
+<span class="g">&#10003;</span> Tag v0.4.0 created
+<span class="g">&#10003;</span> Build journal entry written
+<span class="g">&#10003;</span> npm publish succeeded
+<span class="g">&#10003;</span> Post-deploy verify: <span class="g">OK</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTEGRATIONS ============ -->
+<section class="s">
+  <div class="wrap">
+    <div class="s-head rv">
+      <div class="s-label">integrations</div>
+      <h2 class="s-title">Composes with <strong>existing skills</strong></h2>
+      <p class="s-desc">
+        The cascade orchestrates — it never duplicates.
+        Each integration adds project-specific context and sequencing.
+      </p>
+    </div>
+
+    <div class="int-grid rv">
+      <div class="int-group">
+        <h4>During implementation</h4>
+        <ul class="int-list">
+          <li><span class="n">/proving-correctness</span><span class="r">pushback + inline checkpoints</span></li>
+          <li><span class="n">superpowers:tdd</span><span class="r">tests alongside features</span></li>
+          <li><span class="n">superpowers:debugging</span><span class="r">root cause for bugs</span></li>
+        </ul>
+      </div>
+      <div class="int-group">
+        <h4>Quality chain</h4>
+        <ul class="int-list">
+          <li><span class="n">/proving-correctness</span><span class="r">Gate 3 in subagent</span></li>
+          <li><span class="n">/simplify</span><span class="r">3 parallel reviews</span></li>
+          <li><span class="n">superpowers:verify</span><span class="r">evidence before claims</span></li>
+        </ul>
+      </div>
+      <div class="int-group">
+        <h4>Complex work</h4>
+        <ul class="int-list">
+          <li><span class="n">superpowers:brainstorm</span><span class="r">ideation for 8+ files</span></li>
+          <li><span class="n">superpowers:plans</span><span class="r">implementation plans</span></li>
+        </ul>
+      </div>
+      <div class="int-group">
+        <h4>Branch completion</h4>
+        <ul class="int-list">
+          <li><span class="n">superpowers:finish</span><span class="r">merge/PR workflow</span></li>
+          <li><span class="n">superpowers:worktrees</span><span class="r">isolated workspaces</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout rv">
+      <p>"LLMs write plausible code, not correct code. Code that compiles and passes tests
+        can still be 20,000x slower than it should be."</p>
+      <cite>/proving-correctness</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSTALL ============ -->
+<section id="install" class="s s--alt">
+  <div class="wrap wrap--narrow">
+    <div class="s-head rv">
+      <div class="s-label">get started</div>
+      <h2 class="s-title">Set up in <strong>one command</strong></h2>
+    </div>
+
+    <div class="install-block rv">
+      <div class="install-label">Location</div>
+      <div class="install-code">~/.claude/skills/dev-start/
+~/.claude/skills/dev-check/
+~/.claude/skills/dev-commit/
+~/.claude/skills/dev-pause/
+~/.claude/skills/dev-finish/
+~/.claude/skills/dev-ship/
+~/.claude/skills/dev-bug/
+~/.claude/skills/dev-teach/</div>
+    </div>
+
+    <div class="install-block rv">
+      <div class="install-label">Set up a project</div>
+      <div class="install-code"><span class="d"># Run once in any project directory</span>
+<span class="c">/dev-teach</span>
+
+<span class="d"># Scans conventions, asks about scopes + deploy</span>
+<span class="d"># Scaffolds CLAUDE.md, ref/workflow.md, ROADMAP, CHANGELOG</span>
+<span class="d"># Runs /proving-correctness teach if needed</span></div>
+    </div>
+
+    <div class="install-block rv">
+      <div class="install-label">Then just work</div>
+      <div class="install-code"><span class="c">/dev-start</span> feat memory-ttl    <span class="d"># begin</span>
+<span class="d"># ... implement ...</span>
+<span class="c">/dev-check</span>                     <span class="d"># validate</span>
+<span class="c">/dev-commit</span>                    <span class="d"># commit</span>
+<span class="c">/dev-finish</span>                    <span class="d"># merge</span>
+<span class="c">/dev-ship</span> 0.4.0                <span class="d"># release</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ATTRIBUTION ============ -->
+<section class="s">
+  <div class="wrap wrap--narrow">
+    <div class="s-head rv" style="margin-bottom:2rem">
+      <div class="s-label">standing on shoulders</div>
+      <h2 class="s-title">Built on <strong>great ideas</strong></h2>
+    </div>
+
+    <div class="attrib-grid rv">
+      <div class="attrib">
+        <div class="attrib-name">Superpowers</div>
+        <div class="attrib-desc">The agent skill system that makes Claude Code programmable. Dev Cascade orchestrates superpowers for brainstorming, planning, TDD, debugging, verification, and branch completion.</div>
+      </div>
+      <div class="attrib">
+        <div class="attrib-name">Impeccable</div>
+        <div class="attrib-desc">The cascading skill pattern — independently invokable skills that naturally chain to each other. Dev Cascade borrows this architecture and /simplify for Stage 2 of the quality chain.</div>
+      </div>
+      <div class="attrib">
+        <div class="attrib-name">GSD 2.0</div>
+        <div class="attrib-desc">Boris Cherny's multi-session AI coding framework (via Lenny Rachitsky). Fractal summaries, boundary maps, continue-here files, context window management, and "don't hand-roll."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:1rem;">
+    <div class="f-left">~/.claude/skills/dev-*</div>
+    <div class="f-right">8 skills for <a href="https://claude.ai/code">Claude Code</a></div>
+  </div>
+</footer>
+
+<script>
+function switchTab(btn, pane) {
+  const card = btn.closest('.skill-compare');
+  card.querySelectorAll('.compare-tab').forEach(t => t.classList.remove('active'));
+  card.querySelectorAll('.compare-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  card.querySelector('[data-pane="'+pane+'"]').classList.add('active');
+}
+
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); obs.unobserve(e.target); }});
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+let last = 0;
+const nav = document.querySelector('nav');
+addEventListener('scroll', () => {
+  const y = scrollY;
+  nav.classList.toggle('hidden', y > last && y > 80);
+  last = y;
+}, { passive: true });
+</script>
+
+</body>
+</html>
