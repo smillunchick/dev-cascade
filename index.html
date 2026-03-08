@@ -1232,29 +1232,25 @@ expiration filters at query time, not write.
   <div class="wrap wrap--narrow">
     <div class="s-head rv">
       <div class="s-label">get started</div>
-      <h2 class="s-title">Set up in <strong>one command</strong></h2>
+      <h2 class="s-title">Two paths to <strong>install</strong></h2>
     </div>
 
     <div class="install-block rv">
-      <div class="install-label">Location</div>
-      <div class="install-code">~/.claude/skills/dev-start/
-~/.claude/skills/dev-check/
-~/.claude/skills/dev-commit/
-~/.claude/skills/dev-pause/
-~/.claude/skills/dev-finish/
-~/.claude/skills/dev-ship/
-~/.claude/skills/dev-bug/
-~/.claude/skills/dev-teach/</div>
+      <div class="install-label">Claude Code — install skills</div>
+      <div class="install-code"><span class="d"># Clone the repo and copy skills into Claude's skill directory</span>
+<span class="c">git clone</span> https://github.com/smillunchick/dev-cascade.git /tmp/dev-cascade
+<span class="c">cp -r</span> /tmp/dev-cascade/skills/* ~/.claude/skills/
+<span class="c">rm -rf</span> /tmp/dev-cascade
+
+<span class="d"># Then run once in any project to scaffold</span>
+<span class="c">/dev-teach</span></div>
     </div>
 
     <div class="install-block rv">
-      <div class="install-label">Set up a project</div>
-      <div class="install-code"><span class="d"># Run once in any project directory</span>
-<span class="c">/dev-teach</span>
-
-<span class="d"># Scans conventions, asks about scopes + deploy</span>
-<span class="d"># Scaffolds CLAUDE.md, ref/workflow.md, ROADMAP, CHANGELOG</span>
-<span class="d"># Runs /proving-correctness teach if needed</span></div>
+      <div class="install-label">Cursor / Windsurf / Aider / Any LLM Agent</div>
+      <div class="install-code"><span class="d"># Copy agents.md into your project as system instructions</span>
+<span class="c">curl -sL</span> https://raw.githubusercontent.com/smillunchick/dev-cascade/master/agents.md \
+  <span class="c">-o</span> .cursorrules   <span class="d"># or .windsurfrules, AGENTS.md, system prompt, etc.</span></div>
     </div>
 
     <div class="install-block rv">
@@ -1284,7 +1280,7 @@ expiration filters at query time, not write.
       </div>
       <div class="attrib">
         <div class="attrib-name">Impeccable</div>
-        <div class="attrib-desc">The cascading skill pattern — independently invokable skills that naturally chain to each other. Dev Cascade borrows this architecture and /simplify for Stage 2 of the quality chain.</div>
+        <div class="attrib-desc">The cascading skill pattern — independently invokable skills that naturally chain to each other. Dev Cascade borrows this architecture for its eight-skill workflow.</div>
       </div>
       <div class="attrib">
         <div class="attrib-name">GSD 2.0</div>
@@ -1296,8 +1292,8 @@ expiration filters at query time, not write.
 
 <footer>
   <div class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:1rem;">
-    <div class="f-left">~/.claude/skills/dev-*</div>
-    <div class="f-right">8 skills for <a href="https://claude.ai/code">Claude Code</a></div>
+    <div class="f-left"><a href="https://github.com/smillunchick/dev-cascade" style="color:var(--text-3);text-decoration:none;">github.com/smillunchick/dev-cascade</a></div>
+    <div class="f-right">8 skills for <a href="https://claude.ai/code">Claude Code</a> + <a href="https://github.com/smillunchick/dev-cascade/blob/master/agents.md">agents.md</a> for everyone else</div>
   </div>
 </footer>
 
